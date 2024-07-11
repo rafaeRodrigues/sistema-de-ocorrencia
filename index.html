@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login e Cadastro</title>
+    <style>
+        /* Estilos mantidos conforme o código original */
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #b0e0e6;
+        }
+        
+        .top-bar {
+            background-color: #007bff;
+            color: white;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .top-bar .user-info {
+            margin-left: 20px;
+        }
+        
+        .top-bar .logout-btn {
+            margin-right: 20px;
+            background-color: #ff4d4d;
+            border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .top-bar .logout-btn:hover {
+            background-color: #d93636;
+        }
+        
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 1em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        #logo {
+            text-decoration: none;
+            color: white;
+            font-size: 1.5em;
+        }
+        
+        #openMenu,
+        #closeMenu {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+        
+        nav {
+            display: none;
+            flex-direction: column;
+            align-items: flex-start;
+            background-color: #007bff;
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 200px;
+            padding: 1em;
+        }
+        
+        nav a {
+            color: #b0e0e6;
+            text-decoration: none;
+            padding: 0.5em 0;
+            width: 100%;
+            text-align: left;
+        }
+        
+        main {
+            padding: 2em;
+            background-color: #b0e0e6;
+            margin-top: 60px;
+        }
+        
+        aside {
+            padding: 2em;
+            background-color: #b0e0e6;
+        }
+        
+        footer {
+            background-color: #b0e0e6;
+            color: white;
+            text-align: center;
+            padding: 1em;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            max-width: 100%;
+            padding: 20px;
+            margin: 20px auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #007bff, rgba(0, 123, 255, 0.1));
+            z-index: -1;
+            transition: opacity 0.5s;
+            opacity: 0.5;
+            animation: lightGlow 5s infinite alternate;
+        }
+        
+        @keyframes lightGlow {
+            0% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 0.8;
+            }
+        }
+        
+        img {
+            display: block;
+            margin: 0 auto 20px;
+            max-width: 100px;
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #007bff;
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #333;
+            animation: fadeIn 1.2s ease-in-out;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 5px;
+            transition: border-color 0.3s;
+            animation: fadeIn 1.4s ease-in-out;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        
+        .form-group button,
+        .main-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s;
+            animation: fadeIn 1.6s ease-in-out;
+            margin-top: 10px;
+        }
+        
+        .form-group button:hover,
+        .main-btn:hover {
+            background-color: #007bff;
+            transform: scale(1.05);
+        }
+        
+        .switch-form {
+            text-align: center;
+            margin-top: 20px;
+            animation: fadeIn 1.8s ease-in-out;
+        }
+        
+        .switch-form a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        
+        .switch-form a:hover {
+            text-decoration: underline;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 123, 255, 0.2);
+            border-top: 5px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        #success-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .main-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        #success-form,
+        #user-data,
+        #filter-data {
+            display: none;
+            flex-direction: column;
+        }
+        
+        #user-data table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        #user-data th,
+        #user-data td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        .captcha-container {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .captcha-container input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        
+        .filter-group {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-bar">
+        <div class="user-info">
+            <span id="user-name"></span> | <span id="current-datetime"></span>
+        </div>
+        <button class="logout-btn" onclick="logout()">Sair</button>
+    </div>
+
+    <header>
+        <a href="./layout.html" id="logo">Logo</a>
+        <button id="openMenu">&#9776;</button>
+        <nav id="menu">
+            <button id="closeMenu">X</button>
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Products</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container" id="login-form">
+            <img src="nome_sistema.jpg" alt="Logo">
+            <h2>Login</h2>
+            <div class="form-group">
+                <label for="login-email">Login</label>
+                <input type="text" id="login-email" name="login-email" required>
+            </div>
+            <div class="form-group">
+                <label for="login-password">Senha</label>
+                <input type="password" id="login-password" name="login-password" required>
+            </div>
+            <div class="form-group">
+                <button type="button" onclick="login()">Entrar</button>
+            </div>
+            <div class="switch-form">
+                <span>Não tem uma conta? <a href="#" onclick="toggleForms()">Cadastre-se</a></span>
+            </div>
+        </div>
+
+        <div class="container" id="signup-form" style="display: none;">
+            <img src="nome_sistema.jpg" alt="Logo">
+            <h2>Cadastro</h2>
+            <div class="form-group">
+                <label for="signup-name">Nome</label>
+                <input type="text" id="signup-name" name="signup-name" required>
+            </div>
+            <div class="form-group">
+                <label for="signup-email">Email</label>
+                <input type="email" id="signup-email" name="signup-email" required>
+            </div>
+            <div class="form-group">
+                <label for="signup-password">Senha</label>
+                <input type="password" id="signup-password" name="signup-password" required>
+            </div>
+            <div class="form-group">
+                <button type="button" onclick="signup()">Cadastrar</button>
+            </div>
+            <div class="switch-form">
+                <span>Já tem uma conta? <a href="#" onclick="toggleForms()">Entre</a></span>
+            </div>
+        </div>
+
+        <div id="success-container" class="container">
+            <h2>Bem-vindo, <span id="logged-user-name"></span></h2>
+            <button class="main-btn" onclick="showMainForm()">Formulário Principal</button>
+            <button class="main-btn" onclick="showUserData()">Dados Salvos</button>
+            <button class="main-btn" onclick="showFilterData()">Filtrar e Imprimir</button>
+            <button class="main-btn" onclick="visualizarPlanilha()">Salvar Dados do Dia</button>
+            <button class="main-btn" onclick="visualizarDadosOnline()">Visualizar Dados Online</button>
+            <button class="main-btn" onclick="sendEmail()">Enviar Dados por Email</button>
+        </div>
+
+        <div id="success-form" class="container">
+            <h2>Dados do Aluno</h2>
+            <div class="form-group">
+                <label for="monitor-nome">Nome do Monitor</label>
+                <input type="text" id="monitor-nome" name="monitor-nome" required>
+            </div>
+            <div class="form-group">
+                <label for="xerife-nome">Nome do Xerife</label>
+                <input type="text" id="xerife-nome" name="xerife-nome" required>
+            </div>
+            <div class="form-group">
+                <label for="aluno-nome">Nome do Aluno</label>
+                <input type="text" id="aluno-nome" name="aluno-nome" required>
+            </div>
+            <div class="form-group">
+                <label for="companhia">Companhia</label>
+                <input type="text" id="companhia" name="companhia" required>
+            </div>
+            <div class="form-group">
+                <label for="turma">Turma</label>
+                <input type="text" id="turma" name="turma" required>
+            </div>
+            <div class="form-group">
+                <label for="horario-fatos">Horário dos Fatos</label>
+                <input type="time" id="horario-fatos" name="horario-fatos" required>
+            </div>
+            <div class="form-group">
+                <label for="fatos-narrados">Fatos Narrados</label>
+                <textarea id="fatos-narrados" name="fatos-narrados" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="cpf-aluno">CPF do Aluno</label>
+                <input type="text" id="cpf-aluno" name="cpf-aluno" required>
+            </div>
+            <div class="form-group">
+                <label for="tipo-situacao">Tipo de Situação</label>
+                <select id="tipo-situacao" name="tipo-situacao" required>
+                    <option value="gravissima">Gravíssima</option>
+                    <option value="grave">Grave</option>
+                    <option value="moderada">Moderada</option>
+                    <option value="leve">Leve</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="data-registrada">Data Registrada</label>
+                <input type="date" id="data-registrada" name="data-registrada" required>
+            </div>
+            <div class="form-group">
+                <label for="observacao-monitor">Observação do Monitor</label>
+                <textarea id="observacao-monitor" name="observacao-monitor" rows="4" required></textarea>
+            </div>
+            <div class="captcha-container">
+                <input type="checkbox" id="captcha" required>
+                <label for="captcha">Não sou um robô</label>
+            </div>
+            <div class="form-group">
+                <button type="button" onclick="saveUserData()">Salvar Dados</button>
+            </div>
+            <div class="form-group">
+                <button type="button" onclick="saveToPDF()">Salvar em PDF</button>
+                <button type="button" onclick="saveToExcel()">Salvar em Excel</button>
+                <button type="button" onclick="imprimirFormulario()">Imprimir Dados</button>
+                <button type="button" onclick="saveToZip()">Salvar em ZIP</button>
+            </div>
+        </div>
+
+        <div id="user-data" class="container">
+            <h2>Dados Salvos</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome do Monitor</th>
+                        <th>Nome do Xerife</th>
+                        <th>Nome do Aluno</th>
+                        <th>Companhia</th>
+                        <th>Turma</th>
+                        <th>Horário dos Fatos</th>
+                        <th>Fatos Narrados</th>
+                        <th>CPF do Aluno</th>
+                        <th>Tipo de Situação</th>
+                        <th>Data Registrada</th>
+                        <th>Observação do Monitor</th>
+                    </tr>
+                </thead>
+                <tbody id="user-data-tbody">
+                    <!-- Dados dos alunos serão exibidos aqui -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="filter-data" class="container">
+            <h2>Filtrar Dados</h2>
+            <div class="filter-group">
+                <label for="filter-cpf">CPF do Aluno</label>
+                <input type="text" id="filter-cpf" name="filter-cpf">
+            </div>
+            <div class="filter-group">
+                <label for="filter-date">Data</label>
+                <input type="date" id="filter-date" name="filter-date">
+            </div>
+            <div class="form-group">
+                <button type="button" onclick="filterAndPrint()">Filtrar e Imprimir</button>
+            </div>
+        </div>
+
+        <div class="loader-overlay" id="loader">
+            <div class="loader"></div>
+        </div>
+    </main>
+
+    <aside>VERSÃO 1.0</aside>
+    <footer>SISTEMA DE OCORRÊNCIA</footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+    <script>
+        const users = [{
+            email: '0101',
+            password: '0101',
+            name: 'Monitor'
+        }];
+        const userData = [];
+
+        function toggleForms() {
+            var loginForm = document.getElementById('login-form');
+            var signupForm = document.getElementById('signup-form');
+            if (loginForm.style.display === 'none') {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+            }
+        }
+
+        function showLoader() {
+            document.getElementById('loader').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+            }, 3000); // Simulate a 3 second loading time
+        }
+
+        function login() {
+            var loginEmail = document.getElementById('login-email').value;
+            var loginPassword = document.getElementById('login-password').value;
+
+            showLoader();
+            setTimeout(() => {
+                const user = users.find(u => u.email === loginEmail && u.password === loginPassword);
+                if (user) {
+                    document.getElementById('login-form').style.display = 'none';
+                    document.getElementById('success-container').style.display = 'flex';
+
+                    document.getElementById('user-name').innerText = user.name;
+                    document.getElementById('logged-user-name').innerText = user.name;
+                    document.getElementById('current-datetime').innerText = new Date().toLocaleString();
+                } else {
+                    document.getElementById('loader').style.display = 'none';
+                    alert('Login ou senha incorretos!');
+                }
+            }, 3000); // Simulate a 3 second loading time
+        }
+
+        function signup() {
+            var signupName = document.getElementById('signup-name').value;
+            var signupEmail = document.getElementById('signup-email').value;
+            var signupPassword = document.getElementById('signup-password').value;
+
+            if (users.find(u => u.email === signupEmail)) {
+                alert('Usuário já existe!');
+                return;
+            }
+
+            users.push({
+                email: signupEmail,
+                password: signupPassword,
+                name: signupName
+            });
+            alert('Cadastro realizado com sucesso!');
+            toggleForms();
+        }
+
+        function showMainForm() {
+            document.getElementById('success-form').style.display = 'flex';
+            document.getElementById('user-data').style.display = 'none';
+            document.getElementById('filter-data').style.display = 'none';
+        }
+
+        function showUserData() {
+            document.getElementById('success-form').style.display = 'none';
+            document.getElementById('user-data').style.display = 'flex';
+            document.getElementById('filter-data').style.display = 'none';
+
+            const tbody = document.getElementById('user-data-tbody');
+            tbody.innerHTML = '';
+            userData.forEach((data, index) => {
+                const row = `<tr>
+                    <td>${index + 1}</td>
+                    <td>${data.monitorNome}</td>
+                    <td>${data.xerifeNome}</td>
+                    <td>${data.alunoNome}</td>
+                    <td>${data.companhia}</td>
+                    <td>${data.turma}</td>
+                    <td>${data.horarioFatos}</td>
+                    <td>${data.fatosNarrados}</td>
+                    <td>${data.cpfAluno}</td>
+                    <td>${data.tipoSituacao}</td>
+                    <td>${data.dataRegistrada}</td>
+                    <td>${data.observacaoMonitor}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function showFilterData() {
+            document.getElementById('success-form').style.display = 'none';
+            document.getElementById('user-data').style.display = 'none';
+            document.getElementById('filter-data').style.display = 'flex';
+        }
+
+        function saveUserData() {
+            const monitorNome = document.getElementById('monitor-nome').value;
+            const xerifeNome = document.getElementById('xerife-nome').value;
+            const alunoNome = document.getElementById('aluno-nome').value;
+            const companhia = document.getElementById('companhia').value;
+            const turma = document.getElementById('turma').value;
+            const horarioFatos = document.getElementById('horario-fatos').value;
+            const fatosNarrados = document.getElementById('fatos-narrados').value;
+            const cpfAluno = document.getElementById('cpf-aluno').value;
+            const tipoSituacao = document.getElementById('tipo-situacao').value;
+            const dataRegistrada = document.getElementById('data-registrada').value;
+            const observacaoMonitor = document.getElementById('observacao-monitor').value;
+            const captcha = document.getElementById('captcha').checked;
+
+            if (!captcha) {
+                alert("Por favor, verifique a caixa 'Não sou um robô'.");
+                return;
+            }
+
+            const newUserData = {
+                monitorNome,
+                xerifeNome,
+                alunoNome,
+                companhia,
+                turma,
+                horarioFatos,
+                fatosNarrados,
+                cpfAluno,
+                tipoSituacao,
+                dataRegistrada,
+                observacaoMonitor
+            };
+            userData.push(newUserData);
+
+            alert("Dados salvos com sucesso!");
+            document.getElementById('success-form').reset();
+
+            showUserData(); // Mostrar os dados salvos na tabela
+        }
+
+        function filterAndPrint() {
+            const filterCPF = document.getElementById('filter-cpf').value;
+            const filterDate = document.getElementById('filter-date').value;
+            const filteredData = userData.filter(data => data.cpfAluno === filterCPF && (!filterDate || data.dataRegistrada === filterDate));
+
+            if (filteredData.length === 0) {
+                alert("Nenhum dado encontrado para os critérios selecionados.");
+                return;
+            }
+
+            const {
+                jsPDF
+            } = window.jspdf;
+            const doc = new jsPDF();
+
+            filteredData.forEach((data, index) => {
+                doc.text(`ID: ${index + 1}`, 10, 10);
+                doc.text(`Nome do Monitor: ${data.monitorNome}`, 10, 20);
+                doc.text(`Nome do Xerife: ${data.xerifeNome}`, 10, 30);
+                doc.text(`Nome do Aluno: ${data.alunoNome}`, 10, 40);
+                doc.text(`Companhia: ${data.companhia}`, 10, 50);
+                doc.text(`Turma: ${data.turma}`, 10, 60);
+                doc.text(`Horário dos Fatos: ${data.horarioFatos}`, 10, 70);
+                doc.text(`Fatos Narrados: ${data.fatosNarrados}`, 10, 80);
+                doc.text(`CPF do Aluno: ${data.cpfAluno}`, 10, 90);
+                doc.text(`Tipo de Situação: ${data.tipoSituacao}`, 10, 100);
+                doc.text(`Data Registrada: ${data.dataRegistrada}`, 10, 110);
+                doc.text(`Observação do Monitor: ${data.observacaoMonitor}`, 10, 120);
+                if (index < filteredData.length - 1) {
+                    doc.addPage();
+                }
+            });
+
+            doc.save('dados_filtrados.pdf');
+        }
+
+        function saveToPDF() {
+            const alunoNome = document.getElementById('aluno-nome').value.replace(/\s+/g, '_');
+            const {
+                jsPDF
+            } = window.jspdf;
+            const doc = new jsPDF();
+
+            userData.forEach((data, index) => {
+                doc.text(`ID: ${index + 1}`, 10, 10);
+                doc.text(`Nome do Monitor: ${data.monitorNome}`, 10, 20);
+                doc.text(`Nome do Xerife: ${data.xerifeNome}`, 10, 30);
+                doc.text(`Nome do Aluno: ${data.alunoNome}`, 10, 40);
+                doc.text(`Companhia: ${data.companhia}`, 10, 50);
+                doc.text(`Turma: ${data.turma}`, 10, 60);
+                doc.text(`Horário dos Fatos: ${data.horarioFatos}`, 10, 70);
+                doc.text(`Fatos Narrados: ${data.fatosNarrados}`, 10, 80);
+                doc.text(`CPF do Aluno: ${data.cpfAluno}`, 10, 90);
+                doc.text(`Tipo de Situação: ${data.tipoSituacao}`, 10, 100);
+                doc.text(`Data Registrada: ${data.dataRegistrada}`, 10, 110);
+                doc.text(`Observação do Monitor: ${data.observacaoMonitor}`, 10, 120);
+                if (index < userData.length - 1) {
+                    doc.addPage();
+                }
+            });
+
+            doc.save(`${alunoNome}.pdf`);
+        }
+
+        function saveToExcel() {
+            const worksheet = XLSX.utils.json_to_sheet(userData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Dados");
+
+            XLSX.writeFile(workbook, 'dados_alunos.xlsx');
+        }
+
+        function imprimirFormulario() {
+            const formData = {
+                monitorNome: document.getElementById('monitor-nome').value,
+                xerifeNome: document.getElementById('xerife-nome').value,
+                alunoNome: document.getElementById('aluno-nome').value,
+                companhia: document.getElementById('companhia').value,
+                turma: document.getElementById('turma').value,
+                horarioFatos: document.getElementById('horario-fatos').value,
+                fatosNarrados: document.getElementById('fatos-narrados').value,
+                cpfAluno: document.getElementById('cpf-aluno').value,
+                tipoSituacao: document.getElementById('tipo-situacao').value,
+                dataRegistrada: document.getElementById('data-registrada').value,
+                observacaoMonitor: document.getElementById('observacao-monitor').value
+            };
+
+            let printContent = '<h2>Dados do Aluno</h2>';
+            for (const [key, value] of Object.entries(formData)) {
+                printContent += `<p><strong>${key.replace(/([A-Z])/g, ' $1')}: </strong>${value}</p>`;
+            }
+
+            const newWindow = window.open('', '', 'width=800,height=600');
+            newWindow.document.write('<html><head><title>Imprimir Dados</title></head><body>');
+            newWindow.document.write(printContent);
+            newWindow.document.write('</body></html>');
+            newWindow.document.close();
+            newWindow.print();
+        }
+
+        function saveToZip() {
+            const alunoNome = document.getElementById('aluno-nome').value.replace(/\s+/g, '_');
+            const zip = new JSZip();
+            const folder = zip.folder(alunoNome);
+
+            const pdfPromise = new Promise((resolve) => {
+                const {
+                    jsPDF
+                } = window.jspdf;
+                const doc = new jsPDF();
+
+                userData.forEach((data, index) => {
+                    doc.text(`ID: ${index + 1}`, 10, 10);
+                    doc.text(`Nome do Monitor: ${data.monitorNome}`, 10, 20);
+                    doc.text(`Nome do Xerife: ${data.xerifeNome}`, 10, 30);
+                    doc.text(`Nome do Aluno: ${data.alunoNome}`, 10, 40);
+                    doc.text(`Companhia: ${data.companhia}`, 10, 50);
+                    doc.text(`Turma: ${data.turma}`, 10, 60);
+                    doc.text(`Horário dos Fatos: ${data.horarioFatos}`, 10, 70);
+                    doc.text(`Fatos Narrados: ${data.fatosNarrados}`, 10, 80);
+                    doc.text(`CPF do Aluno: ${data.cpfAluno}`, 10, 90);
+                    doc.text(`Tipo de Situação: ${data.tipoSituacao}`, 10, 100);
+                    doc.text(`Data Registrada: ${data.dataRegistrada}`, 10, 110);
+                    doc.text(`Observação do Monitor: ${data.observacaoMonitor}`, 10, 120);
+                    if (index < userData.length - 1) {
+                        doc.addPage();
+                    }
+                });
+
+                doc.save(`${alunoNome}.pdf`, {
+                    returnPromise: true
+                }).then((pdfFile) => {
+                    folder.file(`${alunoNome}.pdf`, pdfFile, {
+                        binary: true
+                    });
+                    resolve();
+                });
+            });
+
+            const excelPromise = new Promise((resolve) => {
+                const worksheet = XLSX.utils.json_to_sheet(userData);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Dados");
+
+                const wbout = XLSX.write(workbook, {
+                    bookType: 'xlsx',
+                    type: 'binary'
+                });
+
+                folder.file(`${alunoNome}.xlsx`, wbout, {
+                    binary: true
+                });
+                resolve();
+            });
+
+            Promise.all([pdfPromise, excelPromise]).then(() => {
+                zip.generateAsync({
+                    type: "blob"
+                }).then((content) => {
+                    saveAs(content, `${alunoNome}.zip`);
+                });
+            });
+        }
+
+        function visualizarPlanilha() {
+            const workbook = XLSX.utils.book_new();
+            const worksheet = XLSX.utils.json_to_sheet(userData);
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Dados");
+
+            const wbout = XLSX.write(workbook, {
+                bookType: 'xlsx',
+                type: 'binary'
+            });
+            const blob = new Blob([s2ab(wbout)], {
+                type: 'application/octet-stream'
+            });
+
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'dados_alunos.xlsx';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function visualizarDadosOnline() {
+            window.open('https://docs.google.com/spreadsheets/d/1QhkgEbRtwrudyfFS3u3vV5T1xtohs0RL_vSCCfwaFvo/edit?usp=sharing', '_blank');
+        }
+
+        function s2ab(s) {
+            const buf = new ArrayBuffer(s.length);
+            const view = new Uint8Array(buf);
+            for (let i = 0; i < s.length; i++) {
+                view[i] = s.charCodeAt(i) & 0xFF;
+            }
+            return buf;
+        }
+
+        function logout() {
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('success-container').style.display = 'none';
+            document.getElementById('success-form').style.display = 'none';
+            document.getElementById('user-data').style.display = 'none';
+            document.getElementById('filter-data').style.display = 'none';
+        }
+
+        function sendEmail() {
+            const email = prompt("Digite o email para enviar os dados:");
+            if (email) {
+                const emailBody = JSON.stringify(userData, null, 2);
+                window.location.href = `mailto:${email}?subject=Dados%20do%20Sistema&body=${encodeURIComponent(emailBody)}`;
+            }
+        }
+    </script>
+</body>
+
+</html>
